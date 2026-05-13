@@ -10,9 +10,13 @@ if (isset($_POST['sender_id']) && isset($_POST['receiver_id']) && isset($_POST['
     $receiver_id = $_POST['receiver_id'];
     $content = $_POST['content'];
 
+    $is_group = isset($_POST['is_group']) ? (int)$_POST['is_group'] : 0;
+
     // Dùng Prepared Statement để chống SQL Injection (Lead là phải code bảo mật)
-    $stmt = $conn->prepare("INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)");
-    $stmt->bind_param("iis", $sender_id, $receiver_id, $content);
+    $stmt = $conn->prepare("INSERT INTO messages (sender_id, receiver_id, content, is_group) VALUES (?,?, ?, ?)");
+
+    
+    $stmt->bind_param("iisi", $sender_id, $receiver_id, $content, $is_group);
 
     if ($stmt->execute()) {
         echo json_encode(["status" => "success", "message" => "Đã gửi tin nhắn"]);
